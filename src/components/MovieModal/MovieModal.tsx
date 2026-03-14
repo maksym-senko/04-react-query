@@ -23,25 +23,27 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
 
   if (!modalRoot) return null;
 
-  const poster = movie.poster_path 
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
-    : 'https://via.placeholder.com/500x750?text=No+Poster';
+  const imageUrl = movie.backdrop_path 
+    ? `https://image.tmdb.org/t/p/w780${movie.backdrop_path}` 
+    : 'https://via.placeholder.com/780x440?text=No+Image+Available';
 
   return createPortal(
     <div className={s.backdrop} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={s.content}>
-        <button className={s.closeBtn} onClick={onClose}>&times;</button>
+        <button className={s.closeBtn} onClick={onClose} aria-label="close">
+          &times;
+        </button>
         
-        <div className={s.columns}>
-          <div className={s.posterColumn}>
-            <img src={poster} alt={movie.title} className={s.poster} />
-          </div>
+        <div className={s.modalLayout}>
+          <img src={imageUrl} alt={movie.title} className={s.backdropImg} />
           
-          <div className={s.infoColumn}>
+          <div className={s.info}>
             <h2 className={s.title}>{movie.title}</h2>
-            <p className={s.rating}>⭐ {movie.vote_average.toFixed(1)} / 10</p>
+            <div className={s.meta}>
+              <span className={s.rating}>⭐ {movie.vote_average.toFixed(1)}</span>
+              <span className={s.date}>{movie.release_date}</span>
+            </div>
             <p className={s.overview}>{movie.overview}</p>
-            <p className={s.date}>Release: {movie.release_date}</p>
           </div>
         </div>
       </div>
