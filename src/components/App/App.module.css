@@ -1,3 +1,37 @@
-.app {
-    padding: 0 16px;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #141414;
+  color: #ffffff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  gap: 8px;
+  margin: 40px 0;
+  padding: 0;
+}
+
+.pagination li a {
+  padding: 10px 16px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #1f1f1f;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.pagination li a:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.active a {
+  background-color: #e50914 !important;
+  border-color: #e50914 !important;
 }

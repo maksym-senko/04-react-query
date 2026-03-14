@@ -1,54 +1,48 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { Movie } from '../../types/movie';
-import css from './MovieModal.module.css';
+import s from './MovieModal.module.css';
 
 interface MovieModalProps {
-  movie: Movie | null;
+  movie: Movie;
   onClose: () => void;
 }
 
-const modalRoot = document.querySelector('#modal-root') as HTMLElement;
-
 const MovieModal = ({ movie, onClose }: MovieModalProps) => {
+  const modalRoot = document.getElementById('modal-root');
+
   useEffect(() => {
-    if (!movie) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Escape') onClose();
-    };
-
+    const handleEsc = (e: KeyboardEvent) => e.code === 'Escape' && onClose();
+    window.addEventListener('keydown', handleEsc);
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleKeyDown);
-
     return () => {
+      window.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = 'auto';
-      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [movie, onClose]);
+  }, [onClose]);
 
-  if (!movie) return null;
+  if (!modalRoot) return null;
+
+  const poster = movie.poster_path 
+    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
+    : 'https://via.placeholder.com/500x750?text=No+Poster';
 
   return createPortal(
-    <div className={css.backdrop} onClick={onClose} role="dialog" aria-modal="true">
-      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={css.closeButton} onClick={onClose} aria-label="Close modal">
-          &times;
-        </button>
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt={movie.title}
-          className={css.image}
-        />
-        <div className={css.content}>
-          <h2>{movie.title}</h2>
-          <p>{movie.overview}</p>
-          <p>
-            <strong>Release Date:</strong> {movie.release_date}
-          </p>
-          <p>
-            <strong>Rating:</strong> {movie.vote_average.toFixed(1)}/10
-          </p>
+    <div className={s.backdrop} onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className={s.content}>
+        <button className={s.closeBtn} onClick={onClose}>&times;</button>
+        
+        <div className={s.columns}>
+          <div className={s.posterColumn}>
+            <img src={poster} alt={movie.title} className={s.poster} />
+          </div>
+          
+          <div className={s.infoColumn}>
+            <h2 className={s.title}>{movie.title}</h2>
+            <p className={s.rating}>⭐ {movie.vote_average.toFixed(1)} / 10</p>
+            <p className={s.overview}>{movie.overview}</p>
+            <p className={s.date}>Release: {movie.release_date}</p>
+          </div>
         </div>
       </div>
     </div>,
